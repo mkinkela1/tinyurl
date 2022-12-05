@@ -16,9 +16,9 @@ export class UrlController {
     return this.urlService.findAll();
   }
 
-  @Get(":id")
-  findOne(@Param("id") id: string) {
-    return this.urlService.findOne(+id);
+  @Get(":shortUrl")
+  findOne(@Param("shortUrl") shortUrl: string) {
+    return this.urlService.findOne(shortUrl);
   }
 
   @Delete(":id")

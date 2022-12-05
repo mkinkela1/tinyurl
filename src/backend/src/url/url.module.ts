@@ -4,10 +4,9 @@ import { UrlController } from "./url.controller";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { Url } from "src/url/entities/url.entity";
 import { UrlMapper } from "src/url/url.mapper";
-import { UrlRepository } from "src/url/url.repository";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Url, UrlRepository])],
+  imports: [TypeOrmModule.forFeature([Url])],
   controllers: [UrlController],
   providers: [UrlService, UrlMapper]
 })

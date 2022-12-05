@@ -20,6 +20,7 @@ class ConfigService {
   }
 
   public getTypeOrmConfig(): TypeOrmModuleOptions {
+    console.log(__dirname + "/migrations/**/*{.ts,.js}");
     return {
       type: "postgres",
 
@@ -31,8 +32,8 @@ class ConfigService {
 
       migrationsTableName: "migrations",
 
-      migrations: [__dirname + "/migrations/**/*{.ts,.js}"],
-      entities: ["src/**/**/*.entity{.ts,.js}"],
+      migrations: [__dirname + "/../migrations/**/*{.ts,.js}"],
+      entities: [__dirname + "/../**/*{.ts,.js}"],
 
       cli: {
         migrationsDir: "src/migrations"
