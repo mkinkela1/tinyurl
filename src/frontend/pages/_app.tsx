@@ -1,12 +1,9 @@
 import type { AppProps } from "next/app";
 import Head from "next/head";
-import { Inter } from "@next/font/google";
 import "bootstrap/dist/css/bootstrap.css";
 import "/styles/globals.css";
 import { useEffect } from "react";
 import SSRProvider from "react-bootstrap/SSRProvider";
-
-const inter = Inter({ subsets: ["latin"] });
 
 export default function App({ Component, pageProps }: AppProps) {
   useEffect(() => {

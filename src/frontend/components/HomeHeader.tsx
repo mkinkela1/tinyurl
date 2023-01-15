@@ -24,31 +24,6 @@ export default function HomeHeader() {
               <StyledButton>Short it!</StyledButton>
             </InputGroup>
           </Col>
-          {/*<div className="col-lg-6 col-xl-5">*/}
-          {/*  <div className="text-container">*/}
-          {/*    <h1>SaaS App HTML Landing Page</h1>*/}
-          {/*    <p className="p-large">*/}
-          {/*      Use Tivo to automate your marketing actions in order to reach*/}
-          {/*      a much larger audience*/}
-          {/*    </p>*/}
-          {/*    <a className="btn-solid-lg page-scroll" href="sign-up.html">*/}
-          {/*      SIGN UP*/}
-          {/*    </a>*/}
-          {/*  </div>*/}
-          {/*</div>*/}
-          {/*<div className="col-lg-6 col-xl-7">*/}
-          {/*  <div className="image-container">*/}
-          {/*    <div className="img-wrapper">*/}
-          {/*      <Image*/}
-          {/*        width={500}*/}
-          {/*        height={500}*/}
-          {/*        className="img-fluid"*/}
-          {/*        src="/home-img.png"*/}
-          {/*        alt="alternative"*/}
-          {/*      />*/}
-          {/*    </div>*/}
-          {/*  </div>*/}
-          {/*</div>*/}
         </Row>
       </Container>
     </StyledHeader>
