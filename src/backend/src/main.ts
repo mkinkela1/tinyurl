@@ -13,7 +13,15 @@ async function bootstrap() {
     AppModule,
     new FastifyAdapter({ logger: true })
   );
+  app.enableCors({
+    origin: "*",
+    methods: "GET, PUT, POST, DELETE",
+    allowedHeaders:
+      "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With, Content-Encoding"
+  });
+
   app.useGlobalPipes(new ValidationPipe());
+  app.setGlobalPrefix("api");
 
   const config = new DocumentBuilder()
     .setTitle("TinyURL backend")
