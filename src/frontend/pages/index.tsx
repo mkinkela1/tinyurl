@@ -5,25 +5,27 @@ import {
 } from "@heroicons/react/24/outline";
 import { LinkIcon } from "@heroicons/react/20/solid";
 import TopMenu from "components/TopMenu";
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { postApiUrl } from "services/services";
 import { CreateUrlDtoResponse } from "services/types";
 import Link from "next/link";
+import { NotificationContext } from "context/ToastContext";
 
 export default function Home() {
   const urlRef = useRef(null);
   const [data, setData] = useState<CreateUrlDtoResponse>(null);
+  const { onInfo, onSuccess, onError } = useContext(NotificationContext);
 
   const generateShortUrl = async () => {
     try {
       const res = await postApiUrl({ longUrl: urlRef.current.value });
 
       urlRef.current.value = null;
-
       setData(res);
+
+      onSuccess("Short url successfully created");
     } catch (e) {
-      // TODO: use toast
-      console.log(e);
+      onError("Error creating short url");
     }
   };
 
@@ -32,9 +34,10 @@ export default function Home() {
   const copyToClipboard = () => {
     try {
       navigator.clipboard.writeText(getShortUrl());
+
+      onInfo("Short url copied");
     } catch (e) {
-      // TODO: use toast
-      console.log(e);
+      onError("Error copying url");
     }
   };
 

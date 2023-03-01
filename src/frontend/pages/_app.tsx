@@ -1,5 +1,14 @@
 import "../globals.css";
+import NotificationContextProvider from "context/ToastContext";
+import NotificationsList from "components/NotificationsList";
 
-export default function MyApp({ Component, pageProps }) {
-  return <Component {...pageProps} />;
+export default function App({ Component, pageProps }) {
+  return (
+    <>
+      <NotificationContextProvider>
+        <Component {...pageProps} />
+        <NotificationsList />
+      </NotificationContextProvider>
+    </>
+  );
 }
