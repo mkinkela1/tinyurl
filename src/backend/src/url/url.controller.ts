@@ -2,19 +2,27 @@ import { Body, Controller, Delete, Get, Param, Post } from "@nestjs/common";
 import { UrlService } from "./url.service";
 import { CreatetUrlDtoRequest } from "src/url/dto/request/createt-url.dto-request";
 import { CreateUrlDtoResponse } from "src/url/dto/response/create-url.dto-response";
-import { ApiExtraModels, ApiResponse, getSchemaPath } from "@nestjs/swagger";
+import {
+  ApiExtraModels,
+  ApiInternalServerErrorResponse,
+  ApiNotFoundResponse,
+  ApiResponse,
+  getSchemaPath
+} from "@nestjs/swagger";
+import { GetUrlByShortUrlDtoResponse } from "src/url/dto/response/get-url-by-short-url.dto-response";
 
 @Controller("url")
 export class UrlController {
   constructor(private readonly urlService: UrlService) {}
 
   @Post()
-  @ApiExtraModels(CreateUrlDtoResponse) // for CatDto to be found by getSchemaPath()
+  @ApiExtraModels(CreateUrlDtoResponse)
   @ApiResponse({
     schema: {
       $ref: getSchemaPath(CreateUrlDtoResponse)
     }
   })
+  @ApiInternalServerErrorResponse()
   create(
     @Body() createUrlDto: CreatetUrlDtoRequest
   ): Promise<CreateUrlDtoResponse> {
@@ -27,7 +35,16 @@ export class UrlController {
   }
 
   @Get(":shortUrl")
-  findOne(@Param("shortUrl") shortUrl: string) {
+  @ApiExtraModels(GetUrlByShortUrlDtoResponse)
+  @ApiResponse({
+    schema: {
+      $ref: getSchemaPath(GetUrlByShortUrlDtoResponse)
+    }
+  })
+  @ApiNotFoundResponse()
+  getUrlByShortUrl(
+    @Param("shortUrl") shortUrl: string
+  ): Promise<GetUrlByShortUrlDtoResponse> {
     return this.urlService.findOne(shortUrl);
   }
 

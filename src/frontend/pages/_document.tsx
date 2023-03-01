@@ -5,7 +5,9 @@ export default function Document() {
   return (
     <NotificationContextProvider>
       <Html lang="en">
-        <Head />
+        <Head>
+          <link rel="shortcut icon" href="/assets/favicon.ico" />
+        </Head>
         <body>
           <Main />
           <NextScript />

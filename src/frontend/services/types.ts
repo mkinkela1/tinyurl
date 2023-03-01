@@ -19,3 +19,14 @@ export interface CreateUrlDtoResponse {
 export interface CreatetUrlDtoRequest {
   longUrl: string;
 }
+
+export interface GetUrlByShortUrlDtoResponse {
+  /**
+   *
+   * - Format: date-time
+   */
+  createDateTime: string;
+  id: string;
+  longUrl: string;
+  shortUrl: string;
+}

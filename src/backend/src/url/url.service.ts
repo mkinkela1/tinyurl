@@ -1,4 +1,8 @@
-import { Injectable, InternalServerErrorException } from "@nestjs/common";
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException
+} from "@nestjs/common";
 import { customAlphabet } from "nanoid/async";
 import {
   SHORT_URL_ALPHABET,
@@ -10,6 +14,7 @@ import { UrlMapper } from "src/url/url.mapper";
 import { Repository } from "typeorm";
 import { Url } from "src/url/entities/url.entity";
 import { InjectRepository } from "@nestjs/typeorm";
+import { GetUrlByShortUrlDtoResponse } from "src/url/dto/response/get-url-by-short-url.dto-response";
 
 @Injectable()
 export class UrlService {
@@ -43,8 +48,12 @@ export class UrlService {
     return this.urlRepository.findAndCount();
   }
 
-  findOne(shortUrl: string) {
-    return this.urlRepository.find({ where: { shortUrl } });
+  async findOne(shortUrl: string): Promise<GetUrlByShortUrlDtoResponse> {
+    const url = await this.urlRepository.findOne({ where: { shortUrl } });
+
+    if (!url) throw new NotFoundException();
+
+    return this.mapper.mapToGetUrlByShortUrl(url);
   }
 
   remove(id: number) {

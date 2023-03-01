@@ -61,7 +61,6 @@ function getAxiosInstance(security: Security): AxiosInstance {
         }
 
         if (error.isAxiosError) {
-          console.log({ ...error });
           return Promise.reject(new RequestError("noInternetConnection"));
         }
         return Promise.reject(error);
