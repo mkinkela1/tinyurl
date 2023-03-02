@@ -4,7 +4,12 @@
  * @version 6
  *
  */
-import Axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
+import Axios, {
+  AxiosError,
+  AxiosInstance,
+  AxiosRequestConfig,
+  AxiosResponse,
+} from "axios";
 import qs from "qs";
 
 const baseURL =
@@ -17,11 +22,11 @@ const baseConfig: AxiosRequestConfig = {
     Accept: "application/json",
     "Content-Type": "application/json",
     "Access-Control-Allow-Headers":
-      "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With, Content-Encoding"
+      "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With, Content-Encoding",
   },
   paramsSerializer: {
-    serialize: (params) => qs.stringify(params, { arrayFormat: "brackets" })
-  }
+    serialize: (params) => qs.stringify(params, { arrayFormat: "brackets" }),
+  },
 };
 
 let axiosInstance: AxiosInstance;

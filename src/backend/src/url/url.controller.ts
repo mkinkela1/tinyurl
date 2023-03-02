@@ -7,10 +7,12 @@ import {
   ApiInternalServerErrorResponse,
   ApiNotFoundResponse,
   ApiResponse,
+  ApiTags,
   getSchemaPath
 } from "@nestjs/swagger";
 import { GetUrlByShortUrlDtoResponse } from "src/url/dto/response/get-url-by-short-url.dto-response";
 
+@ApiTags("URL")
 @Controller("url")
 export class UrlController {
   constructor(private readonly urlService: UrlService) {}

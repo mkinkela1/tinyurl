@@ -10,7 +10,11 @@ import type { SwaggerResponse } from "./config";
 import { Http } from "./httpRequest";
 //@ts-ignore
 import qs from "qs";
-import type { CreatetUrlDtoRequest } from "./types";
+import type {
+  CreatetUrlDtoRequest,
+  CreateUrlHitDtoRequest,
+  UpdateUrlHitDto,
+} from "./types";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const __DEV__ = process.env.NODE_ENV !== "production";
@@ -56,6 +60,22 @@ function objToUrlencoded(requestBody: object) {
   return qs.stringify(requestBody);
 }
 
+export const deleteApiUrlHitId = (
+  id: string,
+  configOverride?: AxiosRequestConfig
+): Promise<SwaggerResponse<any>> => {
+  return Http.deleteRequest(
+    template(deleteApiUrlHitId.key, { id }),
+    undefined,
+    undefined,
+    undefined,
+    overrideConfig(_CONSTANT0, configOverride)
+  );
+};
+
+/** Key is end point string without base url */
+deleteApiUrlHitId.key = "/api/url-hit/{id}";
+
 export const deleteApiUrlId = (
   id: string,
   configOverride?: AxiosRequestConfig
@@ -87,6 +107,37 @@ export const getApiUrl = (
 /** Key is end point string without base url */
 getApiUrl.key = "/api/url";
 
+export const getApiUrlHit = (
+  configOverride?: AxiosRequestConfig
+): Promise<SwaggerResponse<any>> => {
+  return Http.getRequest(
+    getApiUrlHit.key,
+    undefined,
+    undefined,
+    undefined,
+    overrideConfig(_CONSTANT0, configOverride)
+  );
+};
+
+/** Key is end point string without base url */
+getApiUrlHit.key = "/api/url-hit";
+
+export const getApiUrlHitId = (
+  id: string,
+  configOverride?: AxiosRequestConfig
+): Promise<SwaggerResponse<any>> => {
+  return Http.getRequest(
+    template(getApiUrlHitId.key, { id }),
+    undefined,
+    undefined,
+    undefined,
+    overrideConfig(_CONSTANT0, configOverride)
+  );
+};
+
+/** Key is end point string without base url */
+getApiUrlHitId.key = "/api/url-hit/{id}";
+
 export const getApiUrlShortUrl = (
   shortUrl: string,
   configOverride?: AxiosRequestConfig
@@ -103,6 +154,23 @@ export const getApiUrlShortUrl = (
 /** Key is end point string without base url */
 getApiUrlShortUrl.key = "/api/url/{shortUrl}";
 
+export const patchApiUrlHitId = (
+  id: string,
+  requestBody: UpdateUrlHitDto,
+  configOverride?: AxiosRequestConfig
+): Promise<SwaggerResponse<any>> => {
+  return Http.patchRequest(
+    template(patchApiUrlHitId.key, { id }),
+    undefined,
+    requestBody,
+    undefined,
+    overrideConfig(_CONSTANT0, configOverride)
+  );
+};
+
+/** Key is end point string without base url */
+patchApiUrlHitId.key = "/api/url-hit/{id}";
+
 export const postApiUrl = (
   requestBody: CreatetUrlDtoRequest,
   configOverride?: AxiosRequestConfig
@@ -118,6 +186,22 @@ export const postApiUrl = (
 
 /** Key is end point string without base url */
 postApiUrl.key = "/api/url";
+
+export const postApiUrlHit = (
+  requestBody: CreateUrlHitDtoRequest,
+  configOverride?: AxiosRequestConfig
+): Promise<SwaggerResponse<any>> => {
+  return Http.postRequest(
+    postApiUrlHit.key,
+    undefined,
+    requestBody,
+    undefined,
+    overrideConfig(_CONSTANT0, configOverride)
+  );
+};
+
+/** Key is end point string without base url */
+postApiUrlHit.key = "/api/url-hit";
 export const _CONSTANT0 = {
   headers: {
     "Content-Type": "application/json",

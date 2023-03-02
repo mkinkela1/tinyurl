@@ -16,6 +16,20 @@ export interface CreateUrlDtoResponse {
   shortUrl: string;
 }
 
+export interface CreateUrlHitDtoRequest {
+  urlId: string;
+}
+
+export interface CreateUrlHitDtoResponse {
+  /**
+   *
+   * - Format: date-time
+   */
+  createDateTime: string;
+  id: string;
+  urlId: string;
+}
+
 export interface CreatetUrlDtoRequest {
   longUrl: string;
 }
@@ -29,4 +43,14 @@ export interface GetUrlByShortUrlDtoResponse {
   id: string;
   longUrl: string;
   shortUrl: string;
+}
+
+export interface UpdateUrlHitDto {
+  /**
+   *
+   * - Format: date-time
+   */
+  createDateTime?: string;
+  id?: string;
+  urlId?: string;
 }

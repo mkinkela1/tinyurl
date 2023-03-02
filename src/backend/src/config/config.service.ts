@@ -39,6 +39,8 @@ class ConfigService {
         migrationsDir: "src/migrations"
       },
 
+      keepConnectionAlive: true,
+
       ssl: this.isProduction(),
       logging: !this.isProduction()
     };
