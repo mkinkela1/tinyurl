@@ -103,6 +103,6 @@ dist
 # TernJS port file
 .tern-port
 
-src/backend/dist
-src/backend/node_modules
-src/backend/pgdata
+src/url-service/dist
+src/url-service/node_modules
+src/url-service/pgdata
