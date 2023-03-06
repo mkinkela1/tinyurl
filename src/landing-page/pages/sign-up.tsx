@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function () {
   return (
     <div className="bg-primary flex min-h-screen items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
@@ -9,11 +11,11 @@ export default function () {
             alt="Your Company"
           />
           <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
-            Sign in to your account
+            Crate a new account
           </h2>
         </div>
         <form className="mt-8 space-y-6" action="#" method="POST">
-          <div>
+          <div className="mt-2">
             <label
               htmlFor="price"
               className="block text-sm font-medium leading-6 text-gray-900"
@@ -50,31 +52,34 @@ export default function () {
                 />
               </div>
             </div>
+            <div className="mt-2">
+              <label
+                htmlFor="price"
+                className="block text-sm font-medium leading-6 text-gray-900"
+              >
+                Repeat password
+              </label>
+              <div className="relative mt-2 rounded-md shadow-sm">
+                <input
+                  id="repeat-password"
+                  name="repeat-password"
+                  type="password"
+                  required
+                  className="relative block w-full rounded-md outline-none focus:border-gray-500 focus:outline-none focus:ring-[0px]"
+                  placeholder="Repeat password"
+                />
+              </div>
+            </div>
           </div>
 
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <input
-                id="remember-me"
-                name="remember-me"
-                type="checkbox"
-                className="text-primary h-4 w-4 rounded border-gray-500 outline-none focus:border-gray-500 focus:outline-none focus:ring-[0px]"
-              />
-              <label
-                htmlFor="remember-me"
-                className="ml-2 block text-sm text-gray-900"
-              >
-                Remember me
-              </label>
-            </div>
-
+          <div className="my-6 flex items-center justify-start">
             <div className="text-sm">
-              <a
-                href="#"
+              <Link
+                href="/sign-in"
                 className="text-primary font-medium hover:text-indigo-500"
               >
-                Forgot your password?
-              </a>
+                Already have an account?
+              </Link>
             </div>
           </div>
 
@@ -83,7 +88,7 @@ export default function () {
               type="submit"
               className="bg-primary group relative flex w-full justify-center rounded-md py-2 px-3 text-sm font-semibold text-white outline-none hover:bg-indigo-500"
             >
-              Sign in
+              Sign up
             </button>
           </div>
         </form>

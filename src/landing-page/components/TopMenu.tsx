@@ -73,7 +73,7 @@ export default function () {
             />
           </Link>
         </div>
-        <div className="flex lg:hidden">
+        <div className="flex lg:hidden xl:hidden">
           <button
             type="button"
             className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
@@ -83,7 +83,7 @@ export default function () {
             <Bars3Icon className="h-6 w-6" aria-hidden="true" />
           </button>
         </div>
-        <Popover.Group className="hidden lg:flex lg:gap-x-12">
+        <Popover.Group className="hidden lg:flex lg:gap-x-12 xl:flex xl:gap-x-12">
           <Popover className="relative">
             <Popover.Button className="flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900 focus:outline-none">
               Product
@@ -168,7 +168,7 @@ export default function () {
         </Popover.Group>
         <div className="hidden gap-2 lg:flex lg:flex-1 lg:justify-end">
           <Link
-            href="#"
+            href="/sign-in"
             className="border-primary text-primary rounded-md border px-3.5 py-2.5 text-sm font-semibold leading-6"
           >
             Log in <span aria-hidden="true">&rarr;</span>
@@ -183,7 +183,7 @@ export default function () {
       </nav>
       <Dialog
         as="div"
-        className="lg:hidden"
+        className="lg:hidden xl:hidden"
         open={mobileMenuOpen}
         onClose={setMobileMenuOpen}
       >
@@ -259,7 +259,7 @@ export default function () {
               </div>
               <div className="py-6">
                 <Link
-                  href="#"
+                  href="/sign-in"
                   className="-mx-3 block rounded-lg py-2.5 px-3 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                 >
                   Log in

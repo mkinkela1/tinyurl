@@ -68,7 +68,7 @@ export default function Home() {
         </div>
       </div>
       <div className="bg-secondary h-25 flex-column mx-auto -mt-[50px] max-w-7xl items-center justify-between rounded-3xl bg-white p-6 shadow-lg ring-1 ring-gray-900/5">
-        <div className="relative w-full rounded-md shadow-sm">
+        <div className="relative w-full rounded-md shadow-sm outline-none focus:ring-0">
           <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
             <span className="text-gray-500 sm:text-sm">
               <LinkIcon className="h-6 w-6" aria-hidden="true" />
@@ -79,7 +79,7 @@ export default function Home() {
             type="text"
             name="url"
             id="url"
-            className="block w-full rounded-md border-gray-300 pl-10 pr-12 focus:outline-none"
+            className="block w-full rounded-md pl-10 pr-12 outline-none focus:border-gray-500 focus:outline-none focus:ring-[0px]"
             placeholder="https://www.google.com"
           />
           <button

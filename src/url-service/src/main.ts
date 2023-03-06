@@ -24,8 +24,8 @@ async function bootstrap() {
   app.setGlobalPrefix("api");
 
   const config = new DocumentBuilder()
-    .setTitle("TinyURL backend")
-    .setDescription("TinyURL API examples")
+    .setTitle("URL service backend")
+    .setDescription("URL service API examples")
     .setVersion("1.0")
     .addBearerAuth(
       {
