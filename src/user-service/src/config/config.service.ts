@@ -19,6 +19,14 @@ class ConfigService {
     return mode != "dev";
   }
 
+  public getEmailConfirmationTokenSecret() {
+    return this.getValue("JWT_EMAIL_CONFIRMATION_TOKEN_SECRET", true);
+  }
+
+  public getEmailConfirmationTokenDuration() {
+    return this.getValue("JWT_EMAIL_CONFIRMATION_TOKEN_DURATION", true);
+  }
+
   public getTypeOrmConfig(): TypeOrmModuleOptions {
     return {
       type: "postgres",
