@@ -1,30 +1,25 @@
-import { Body, Controller, Delete, Get, Param, Patch } from "@nestjs/common";
+import { Controller, Get, UseGuards } from "@nestjs/common";
 import { UserService } from "src/user/user.service";
-import { UpdateUserDto } from "src/user/dto/update-user.dto";
-import { ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
+import { User } from "src/user/entities/user.entity";
+import { JwtAuthGuard } from "src/auth/jwt-auth.guard";
+import { CurrentUser } from "src/auth/get-user.decorator";
+import CurrentUserDtoResponse from "src/user/dto/response/current-user.dto-response";
 
 @ApiTags("USER")
 @Controller("user")
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @ApiBearerAuth("JWT")
+  @UseGuards(JwtAuthGuard)
+  @Get("/me")
+  getCurrentUser(@CurrentUser() user: User): Promise<CurrentUserDtoResponse> {
+    return this.userService.getCurrentUser(user);
+  }
+
   @Get()
   findAll() {
     return this.userService.findAll();
-  }
-
-  @Get(":id")
-  findOne(@Param("id") id: string) {
-    return this.userService.findOne(+id);
-  }
-
-  @Patch(":id")
-  update(@Param("id") id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
-  }
-
-  @Delete(":id")
-  remove(@Param("id") id: string) {
-    return this.userService.remove(+id);
   }
 }

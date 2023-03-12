@@ -19,6 +19,22 @@ class ConfigService {
     return mode != "dev";
   }
 
+  public getJwtTokenSecret() {
+    return this.getValue("JWT_TOKEN_SECRET", true);
+  }
+
+  public getJwtTokenDuration() {
+    return this.getValue("JWT_TOKEN_DURATION", true);
+  }
+
+  public getJwtRefreshTokenSecret() {
+    return this.getValue("JWT_REFRESH_TOKEN_SECRET", true);
+  }
+
+  public getJwtRefreshTokenDuration() {
+    return this.getValue("JWT_REFRESH_TOKEN_DURATION", true);
+  }
+
   public getEmailConfirmationTokenSecret() {
     return this.getValue("JWT_EMAIL_CONFIRMATION_TOKEN_SECRET", true);
   }
