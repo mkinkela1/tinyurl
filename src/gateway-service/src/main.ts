@@ -2,10 +2,6 @@ import { NestFactory } from "@nestjs/core";
 import { AppModule } from "src/app.module";
 import { Logger } from "@nestjs/common";
 import { createProxyMiddleware } from "http-proxy-middleware";
-import { Api } from "src/myApi";
-
-const { api } = new Api();
-api.
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

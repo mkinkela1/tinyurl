@@ -6,10 +6,10 @@ import {
 import { LinkIcon } from "@heroicons/react/20/solid";
 import TopMenu from "components/TopMenu";
 import { useContext, useRef, useState } from "react";
-import { postApiUrl } from "services/services";
 import { CreateUrlDtoResponse } from "services/types";
 import Link from "next/link";
 import { NotificationContext } from "context/ToastContext";
+import Api from "api-calls/Api";
 
 export default function Home() {
   const urlRef = useRef(null);
@@ -18,13 +18,16 @@ export default function Home() {
 
   const generateShortUrl = async () => {
     try {
-      const res = await postApiUrl({ longUrl: urlRef.current.value });
+      const { data } = await Api.urlControllerCreate({
+        longUrl: urlRef.current.value
+      });
 
       urlRef.current.value = null;
-      setData(res);
+      setData(data);
 
       onSuccess("Short url successfully created");
     } catch (e) {
+      console.log(e);
       onError("Error creating short url");
     }
   };

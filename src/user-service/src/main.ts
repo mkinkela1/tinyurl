@@ -13,7 +13,6 @@ async function bootstrap() {
     AppModule,
     new FastifyAdapter({ logger: true })
   );
-
   app.enableCors({
     origin: "*",
     methods: "GET, PUT, POST, DELETE",
@@ -41,9 +40,7 @@ async function bootstrap() {
     )
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup("api/", app, document);
-
-  console.log(configService.getPort());
+  SwaggerModule.setup("api", app, document);
 
   await app.listen(configService.getPort(), "0.0.0.0");
 }
