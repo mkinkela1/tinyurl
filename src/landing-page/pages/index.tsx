@@ -6,10 +6,10 @@ import {
 import { LinkIcon } from "@heroicons/react/20/solid";
 import TopMenu from "components/TopMenu";
 import { useContext, useRef, useState } from "react";
-import { CreateUrlDtoResponse } from "services/types";
 import Link from "next/link";
 import { NotificationContext } from "context/ToastContext";
 import Api from "api-calls/Api";
+import { CreateUrlDtoResponse } from "api-calls/UrlServiceApi";
 
 export default function Home() {
   const urlRef = useRef(null);
@@ -27,7 +27,6 @@ export default function Home() {
 
       onSuccess("Short url successfully created");
     } catch (e) {
-      console.log(e);
       onError("Error creating short url");
     }
   };

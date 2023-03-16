@@ -1,4 +1,27 @@
+import { useContext, useRef } from "react";
+import { NotificationContext } from "context/ToastContext";
+import Api from "api-calls/Api";
+
 export default function () {
+  const emailRef = useRef(null);
+  const passwordRef = useRef(null);
+  const { onError, onSuccess } = useContext(NotificationContext);
+
+  const login = async () => {
+    try {
+      const {
+        data: { token, refreshToken }
+      } = await Api.authControllerSignIn({
+        email: emailRef.current.value,
+        password: passwordRef.current.value
+      });
+
+      onSuccess("Login successful");
+    } catch (e) {
+      onError("Wrong username or password");
+    }
+  };
+
   return (
     <div className="bg-primary flex min-h-screen items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="bg-secondary flex-column mx-auto w-full max-w-md items-center justify-between space-y-8 rounded-3xl p-6 shadow-lg ring-1 ring-gray-900/5">
@@ -22,6 +45,7 @@ export default function () {
             </label>
             <div className="relative mt-2 rounded-md shadow-sm">
               <input
+                ref={emailRef}
                 id="email-address"
                 name="email"
                 type="email"
@@ -40,6 +64,7 @@ export default function () {
               </label>
               <div className="relative mt-2 rounded-md shadow-sm">
                 <input
+                  ref={passwordRef}
                   id="password"
                   name="password"
                   type="password"
@@ -79,12 +104,12 @@ export default function () {
           </div>
 
           <div>
-            <button
-              type="submit"
+            <div
               className="bg-primary group relative flex w-full justify-center rounded-md py-2 px-3 text-sm font-semibold text-white outline-none hover:bg-indigo-500"
+              onClick={login}
             >
               Sign in
-            </button>
+            </div>
           </div>
         </form>
       </div>

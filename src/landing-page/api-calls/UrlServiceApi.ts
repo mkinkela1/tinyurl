@@ -1,6 +1,5 @@
 /* eslint-disable */
 /* tslint:disable */
-
 /*
  * ---------------------------------------------------------------
  * ## THIS FILE WAS GENERATED VIA SWAGGER-TYPESCRIPT-API        ##
@@ -48,18 +47,11 @@ export interface UpdateUrlHitDto {
   createDateTime?: string;
 }
 
-import axios, {
-  AxiosInstance,
-  AxiosRequestConfig,
-  AxiosResponse,
-  HeadersDefaults,
-  ResponseType
-} from "axios";
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, HeadersDefaults, ResponseType } from "axios";
 
 export type QueryParamsType = Record<string | number, any>;
 
-export interface FullRequestParams
-  extends Omit<AxiosRequestConfig, "data" | "params" | "url" | "responseType"> {
+export interface FullRequestParams extends Omit<AxiosRequestConfig, "data" | "params" | "url" | "responseType"> {
   /** set parameter to `true` for call `securityWorker` for this request */
   secure?: boolean;
   /** request path */
@@ -74,13 +66,9 @@ export interface FullRequestParams
   body?: unknown;
 }
 
-export type RequestParams = Omit<
-  FullRequestParams,
-  "body" | "method" | "query" | "path"
->;
+export type RequestParams = Omit<FullRequestParams, "body" | "method" | "query" | "path">;
 
-export interface ApiConfig<SecurityDataType = unknown>
-  extends Omit<AxiosRequestConfig, "data" | "cancelToken"> {
+export interface ApiConfig<SecurityDataType = unknown> extends Omit<AxiosRequestConfig, "data" | "cancelToken"> {
   securityWorker?: (
     securityData: SecurityDataType | null
   ) => Promise<AxiosRequestConfig | void> | AxiosRequestConfig | void;
@@ -102,16 +90,8 @@ export class HttpClient<SecurityDataType = unknown> {
   private secure?: boolean;
   private format?: ResponseType;
 
-  constructor({
-    securityWorker,
-    secure,
-    format,
-    ...axiosConfig
-  }: ApiConfig<SecurityDataType> = {}) {
-    this.instance = axios.create({
-      ...axiosConfig,
-      baseURL: axiosConfig.baseURL || ""
-    });
+  constructor({ securityWorker, secure, format, ...axiosConfig }: ApiConfig<SecurityDataType> = {}) {
+    this.instance = axios.create({ ...axiosConfig, baseURL: axiosConfig.baseURL || "" });
     this.secure = secure;
     this.format = format;
     this.securityWorker = securityWorker;
@@ -120,6 +100,43 @@ export class HttpClient<SecurityDataType = unknown> {
   public setSecurityData = (data: SecurityDataType | null) => {
     this.securityData = data;
   };
+
+  protected mergeRequestParams(params1: AxiosRequestConfig, params2?: AxiosRequestConfig): AxiosRequestConfig {
+    const method = params1.method || (params2 && params2.method);
+
+    return {
+      ...this.instance.defaults,
+      ...params1,
+      ...(params2 || {}),
+      headers: {
+        ...((method && this.instance.defaults.headers[method.toLowerCase() as keyof HeadersDefaults]) || {}),
+        ...(params1.headers || {}),
+        ...((params2 && params2.headers) || {})
+      }
+    };
+  }
+
+  protected stringifyFormItem(formItem: unknown) {
+    if (typeof formItem === "object" && formItem !== null) {
+      return JSON.stringify(formItem);
+    } else {
+      return `${formItem}`;
+    }
+  }
+
+  protected createFormData(input: Record<string, unknown>): FormData {
+    return Object.keys(input || {}).reduce((formData, key) => {
+      const property = input[key];
+      const propertyContent: any[] = property instanceof Array ? property : [property];
+
+      for (const formItem of propertyContent) {
+        const isFileType = formItem instanceof Blob || formItem instanceof File;
+        formData.append(key, isFileType ? formItem : this.stringifyFormItem(formItem));
+      }
+
+      return formData;
+    }, new FormData());
+  }
 
   public request = async <T = any, _E = any>({
     secure,
@@ -138,21 +155,11 @@ export class HttpClient<SecurityDataType = unknown> {
     const requestParams = this.mergeRequestParams(params, secureParams);
     const responseFormat = format || this.format || undefined;
 
-    if (
-      type === ContentType.FormData &&
-      body &&
-      body !== null &&
-      typeof body === "object"
-    ) {
+    if (type === ContentType.FormData && body && body !== null && typeof body === "object") {
       body = this.createFormData(body as Record<string, unknown>);
     }
 
-    if (
-      type === ContentType.Text &&
-      body &&
-      body !== null &&
-      typeof body !== "string"
-    ) {
+    if (type === ContentType.Text && body && body !== null && typeof body !== "string") {
       body = JSON.stringify(body);
     }
 
@@ -160,9 +167,7 @@ export class HttpClient<SecurityDataType = unknown> {
       ...requestParams,
       headers: {
         ...(requestParams.headers || {}),
-        ...(type && type !== ContentType.FormData
-          ? { "Content-Type": type }
-          : {})
+        ...(type && type !== ContentType.FormData ? { "Content-Type": type } : {})
       },
       params: query,
       responseType: responseFormat,
@@ -170,54 +175,6 @@ export class HttpClient<SecurityDataType = unknown> {
       url: path
     });
   };
-
-  protected mergeRequestParams(
-    params1: AxiosRequestConfig,
-    params2?: AxiosRequestConfig
-  ): AxiosRequestConfig {
-    const method = params1.method || (params2 && params2.method);
-
-    return {
-      ...this.instance.defaults,
-      ...params1,
-      ...(params2 || {}),
-      headers: {
-        ...((method &&
-          this.instance.defaults.headers[
-            method.toLowerCase() as keyof HeadersDefaults
-          ]) ||
-          {}),
-        ...(params1.headers || {}),
-        ...((params2 && params2.headers) || {})
-      }
-    };
-  }
-
-  protected stringifyFormItem(formItem: unknown) {
-    if (typeof formItem === "object" && formItem !== null) {
-      return JSON.stringify(formItem);
-    } else {
-      return `${formItem}`;
-    }
-  }
-
-  protected createFormData(input: Record<string, unknown>): FormData {
-    return Object.keys(input || {}).reduce((formData, key) => {
-      const property = input[key];
-      const propertyContent: any[] =
-        property instanceof Array ? property : [property];
-
-      for (const formItem of propertyContent) {
-        const isFileType = formItem instanceof Blob || formItem instanceof File;
-        formData.append(
-          key,
-          isFileType ? formItem : this.stringifyFormItem(formItem)
-        );
-      }
-
-      return formData;
-    }, new FormData());
-  }
 }
 
 /**
@@ -227,9 +184,7 @@ export class HttpClient<SecurityDataType = unknown> {
  *
  * URL service API examples
  */
-export class Api<
-  SecurityDataType extends unknown
-> extends HttpClient<SecurityDataType> {
+export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
   api = {
     /**
      * No description
@@ -238,10 +193,7 @@ export class Api<
      * @name UrlControllerCreate
      * @request POST:/api/url
      */
-    urlControllerCreate: (
-      data: CreatetUrlDtoRequest,
-      params: RequestParams = {}
-    ) =>
+    urlControllerCreate: (data: CreatetUrlDtoRequest, params: RequestParams = {}) =>
       this.request<CreateUrlDtoResponse, void>({
         path: `/api/url`,
         method: "POST",
@@ -272,10 +224,7 @@ export class Api<
      * @name UrlControllerGetUrlByShortUrl
      * @request GET:/api/url/{shortUrl}
      */
-    urlControllerGetUrlByShortUrl: (
-      shortUrl: string,
-      params: RequestParams = {}
-    ) =>
+    urlControllerGetUrlByShortUrl: (shortUrl: string, params: RequestParams = {}) =>
       this.request<GetUrlByShortUrlDtoResponse, void>({
         path: `/api/url/${shortUrl}`,
         method: "GET",
@@ -304,10 +253,7 @@ export class Api<
      * @name UrlHitControllerCreate
      * @request POST:/api/url-hit
      */
-    urlHitControllerCreate: (
-      data: CreateUrlHitDtoRequest,
-      params: RequestParams = {}
-    ) =>
+    urlHitControllerCreate: (data: CreateUrlHitDtoRequest, params: RequestParams = {}) =>
       this.request<CreateUrlHitDtoResponse, void>({
         path: `/api/url-hit`,
         method: "POST",
@@ -352,11 +298,7 @@ export class Api<
      * @name UrlHitControllerUpdate
      * @request PATCH:/api/url-hit/{id}
      */
-    urlHitControllerUpdate: (
-      id: string,
-      data: UpdateUrlHitDto,
-      params: RequestParams = {}
-    ) =>
+    urlHitControllerUpdate: (id: string, data: UpdateUrlHitDto, params: RequestParams = {}) =>
       this.request<void, any>({
         path: `/api/url-hit/${id}`,
         method: "PATCH",

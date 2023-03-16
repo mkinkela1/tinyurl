@@ -16,6 +16,11 @@ export interface SignUpDtoRequest {
   lastName: string;
 }
 
+export interface SignInDtoResponse {
+  token: string;
+  refreshToken: string;
+}
+
 export interface SignInDtoRequest {
   email: string;
   password: string;
@@ -214,11 +219,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request POST:/api/auth/signin
      */
     authControllerSignIn: (data: SignInDtoRequest, params: RequestParams = {}) =>
-      this.request<void, any>({
+      this.request<SignInDtoResponse, any>({
         path: `/api/auth/signin`,
         method: "POST",
         body: data,
         type: ContentType.Json,
+        format: "json",
         ...params
       })
   };

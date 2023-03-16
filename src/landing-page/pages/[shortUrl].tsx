@@ -1,6 +1,5 @@
-import { GetUrlByShortUrlDtoResponse } from "services/types";
-import { getApiUrlShortUrl, postApiUrlHit } from "services/services";
 import { useEffect } from "react";
+import Api from "api-calls/Api";
 
 export default function ({ data: { longUrl } }) {
   useEffect(() => {
@@ -16,9 +15,9 @@ export default function ({ data: { longUrl } }) {
 export async function getServerSideProps({ query }) {
   const shortUrl: string = query.shortUrl as string;
 
-  const { id, longUrl }: GetUrlByShortUrlDtoResponse = await getApiUrlShortUrl(
-    shortUrl
-  );
+  const {
+    data: { id, longUrl }
+  } = await Api.urlControllerGetUrlByShortUrl(shortUrl);
 
   if (!id)
     return {
@@ -27,7 +26,7 @@ export async function getServerSideProps({ query }) {
       }
     };
 
-  await postApiUrlHit({ urlId: id });
+  await Api.urlHitControllerCreate({ urlId: id });
 
   return {
     props: {
