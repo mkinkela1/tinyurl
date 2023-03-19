@@ -1,11 +1,14 @@
 import { useContext, useRef } from "react";
 import { NotificationContext } from "context/ToastContext";
 import Api from "api-calls/Api";
+import { ACCESS_TOKEN, REFRESH_TOKEN } from "constants/LocalStorageConstants";
+import { useRouter } from "next/router";
 
 export default function () {
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
   const { onError, onSuccess } = useContext(NotificationContext);
+  const Router = useRouter();
 
   const login = async () => {
     try {
@@ -16,7 +19,12 @@ export default function () {
         password: passwordRef.current.value
       });
 
+      localStorage.setItem(ACCESS_TOKEN, token);
+      localStorage.setItem(REFRESH_TOKEN, refreshToken);
+
       onSuccess("Login successful");
+
+      Router.replace("/dashboard");
     } catch (e) {
       onError("Wrong username or password");
     }

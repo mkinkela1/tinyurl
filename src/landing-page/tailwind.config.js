@@ -12,8 +12,14 @@ module.exports = {
     extend: {},
     colors: {
       ...colors,
-      primary: "#6929c4",
-      secondary: "#fff"
+      primary: {
+        DEFAULT: "#6929c4",
+        500: "#9573c4"
+      },
+      secondary: "#fff",
+      tertiary: "#1C2434",
+      quaternary: "#F3F4F6",
+      background: "#f2f5f9"
     },
     outlineWidth: {},
     outlineColor: {},
