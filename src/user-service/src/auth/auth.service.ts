@@ -1,7 +1,5 @@
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
-import { Repository } from "typeorm";
 import { User } from "src/user/entities/user.entity";
-import { InjectRepository } from "@nestjs/typeorm";
 import { SignUpDtoRequest } from "src/auth/dto/request/sign-up.dto-request";
 import * as bcrypt from "bcrypt";
 import { configService } from "src/config/config.service";
@@ -13,13 +11,22 @@ import {
 } from "src/exceptions/AuthExceptions";
 import { SignInDtoRequest } from "src/auth/dto/request/sign-in.dto-request";
 import { SignInDtoResponse } from "src/auth/dto/response/sign-in.dto-response";
+import {
+  InvalidEmailVerificationTokenException,
+  UserNotFoundException
+} from "src/exceptions/UserExceptions";
+import { RefreshTokenDtoRequest } from "src/auth/dto/request/refresh-token.dto-request";
+import { RefreshTokenDtoResponse } from "src/auth/dto/response/refresh-token.dto-response";
+import jwtDecode from "jwt-decode";
+import { UserRepository } from "src/user/user.repository";
+import { VerifyEmailDtoRequest } from "src/auth/dto/request/verify-email.dto-request";
+import { ResendVerificationEmailDtoRequest } from "src/auth/dto/request/resend-verification-email.dto-request";
 
 @Injectable()
 export class AuthService {
   constructor(
     private jwtService: JwtService,
-    @InjectRepository(User)
-    private usersRepository: Repository<User>
+    private userRepository: UserRepository
   ) {}
 
   async signUp(dto: SignUpDtoRequest): Promise<void> {
@@ -35,7 +42,7 @@ export class AuthService {
       salt
     );
 
-    const user = this.usersRepository.create({
+    const user = this.userRepository.create({
       email,
       firstName,
       lastName,
@@ -44,7 +51,7 @@ export class AuthService {
     });
 
     try {
-      await this.usersRepository.save(user);
+      await this.userRepository.save(user);
       // TODO: send email confirmation
     } catch (e) {
       if (e.code === "23505") throw new EmailAlreadyExistsException();
@@ -54,7 +61,7 @@ export class AuthService {
 
   async signIn(dto: SignInDtoRequest): Promise<SignInDtoResponse> {
     const { email, password } = dto;
-    const user: User = await this.usersRepository.findOne({ email });
+    const user: User = await this.userRepository.findOne({ email });
     if (!user) throw new WrongEmailOrPasswordException();
 
     const checkPassword = await bcrypt.compare(password, user.password);
@@ -65,6 +72,73 @@ export class AuthService {
     const refreshToken: string = this.getRefreshToken(payload);
 
     return new SignInDtoResponse(token, refreshToken);
+  }
+
+  async refreshToken(
+    dto: RefreshTokenDtoRequest
+  ): Promise<RefreshTokenDtoResponse> {
+    const { refreshToken } = dto;
+
+    try {
+      if (
+        this.jwtService.verify(refreshToken, {
+          secret: configService.getJwtRefreshTokenSecret()
+        })
+      ) {
+        const { email } = jwtDecode<JwtPayload>(refreshToken);
+        if (!email) throw new UserNotFoundException();
+
+        const payload = { email };
+        const newToken = this.getAccessToken(payload);
+        const newRefreshToken = this.getRefreshToken(payload);
+
+        return new RefreshTokenDtoResponse(newToken, newRefreshToken);
+      }
+    } catch {
+      throw new UserNotFoundException();
+    }
+  }
+
+  async verifyEmail(dto: VerifyEmailDtoRequest): Promise<void> {
+    const { emailConfirmationToken } = dto;
+
+    if (
+      !this.jwtService.verify(emailConfirmationToken, {
+        secret: configService.getEmailConfirmationTokenSecret()
+      })
+    )
+      throw new InvalidEmailVerificationTokenException();
+
+    const { email } = jwtDecode<JwtPayload>(emailConfirmationToken);
+    if (!email) throw new UserNotFoundException();
+
+    const user: User = await this.userRepository.expectOne({ email });
+    user.emailConfirmationToken = null;
+    user.isActive = true;
+    await this.userRepository.save(user);
+  }
+
+  async resendVerificationEmail(
+    dto: ResendVerificationEmailDtoRequest
+  ): Promise<void> {
+    const { email } = dto;
+
+    const user: User = await this.userRepository.expectOne({ email });
+    const salt = await bcrypt.genSalt();
+    const emailConfirmationToken: string = this.getEmailConfirmationToken({
+      email
+    });
+    const hashedEmailConfirmationToken: string = bcrypt.hash(
+      emailConfirmationToken,
+      salt
+    );
+
+    await this.userRepository.save({
+      ...user,
+      emailConfirmationToken: hashedEmailConfirmationToken
+    });
+    //await this.mailService.sendConfirmationEmail(email, emailConfirmationToken);
+    // TODO: send email
   }
 
   private getAccessToken(payload: JwtPayload): string {

@@ -20,4 +20,7 @@ export class User extends BaseGlobalEntity {
 
   @Column({ type: "varchar", nullable: true })
   passwordResetToken: string;
+
+  @Column({ type: "boolean", default: false, nullable: false })
+  isActive: boolean;
 }

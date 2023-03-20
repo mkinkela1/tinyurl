@@ -25,7 +25,7 @@ export default function () {
       onSuccess("Login successful");
 
       Router.replace("/dashboard");
-    } catch (e) {
+    } catch {
       onError("Wrong username or password");
     }
   };

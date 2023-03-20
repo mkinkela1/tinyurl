@@ -17,3 +17,8 @@ export const UserNotFound: Record<Language, string> = {
   [Language.EN]: "User not found.",
   [Language.HR]: "Korisnik nije pronađen."
 };
+
+export const InvalidEmailVerificationToken: Record<Language, string> = {
+  [Language.EN]: "Invalid email verification token.",
+  [Language.HR]: "Nevažeći token za verifikaciju e-maila."
+};

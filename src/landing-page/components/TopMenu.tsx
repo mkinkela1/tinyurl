@@ -174,7 +174,7 @@ export default function () {
             Log in <span aria-hidden="true">&rarr;</span>
           </Link>
           <Link
-            href="#"
+            href="/sign-up"
             className="bg-primary rounded-md px-3.5 py-2.5 text-sm font-semibold leading-6 text-white"
           >
             Register <span aria-hidden="true">&rarr;</span>
@@ -265,7 +265,7 @@ export default function () {
                   Log in
                 </Link>
                 <Link
-                  href="#"
+                  href="/sign-up"
                   className="-mx-3 block rounded-lg py-2.5 px-3 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                 >
                   Register

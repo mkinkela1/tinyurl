@@ -8,6 +8,7 @@ import { PassportModule } from "@nestjs/passport";
 import { configService } from "src/config/config.service";
 import { JwtTokenStrategy } from "src/auth/jwt-token.strategy";
 import { JwtRefreshTokenStrategy } from "src/auth/jwt-refresh-token.strategy";
+import { UserRepository } from "src/user/user.repository";
 
 @Module({
   imports: [
@@ -19,7 +20,12 @@ import { JwtRefreshTokenStrategy } from "src/auth/jwt-refresh-token.strategy";
     TypeOrmModule.forFeature([User])
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtTokenStrategy, JwtRefreshTokenStrategy],
+  providers: [
+    AuthService,
+    JwtTokenStrategy,
+    JwtRefreshTokenStrategy,
+    UserRepository
+  ],
   exports: [
     JwtTokenStrategy,
     JwtRefreshTokenStrategy,

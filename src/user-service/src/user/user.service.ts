@@ -1,21 +1,17 @@
 import { Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
 import { User } from "src/user/entities/user.entity";
 import CurrentUserDtoResponse from "src/user/dto/response/current-user.dto-response";
+import { UserRepository } from "src/user/user.repository";
 
 @Injectable()
 export class UserService {
-  constructor(
-    @InjectRepository(User)
-    private usersRepository: Repository<User>
-  ) {}
+  constructor(private userRepository: UserRepository) {}
 
   async getCurrentUser(user: User): Promise<CurrentUserDtoResponse> {
     return new CurrentUserDtoResponse(user);
   }
 
   findAll() {
-    return this.usersRepository.find();
+    return this.userRepository.find();
   }
 }
