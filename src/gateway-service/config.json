@@ -1,0 +1,14 @@
+{
+  "name": "API gateway",
+  "baseUrl": "/api",
+  "endpoints": [
+    {
+      "url": "http://0.0.0.0:8080/api-json",
+      "name": "Users"
+    },
+    {
+      "url": "http://0.0.0.0:8081/api-json",
+      "name": "URLs"
+    }
+  ]
+}
