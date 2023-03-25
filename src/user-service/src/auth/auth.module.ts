@@ -9,6 +9,7 @@ import { configService } from "src/config/config.service";
 import { JwtTokenStrategy } from "src/auth/jwt-token.strategy";
 import { JwtRefreshTokenStrategy } from "src/auth/jwt-refresh-token.strategy";
 import { UserRepository } from "src/user/user.repository";
+import { ClientsModule, Transport } from "@nestjs/microservices";
 
 @Module({
   imports: [
@@ -17,7 +18,20 @@ import { UserRepository } from "src/user/user.repository";
       secret: configService.getJwtTokenSecret(),
       signOptions: { expiresIn: configService.getJwtTokenDuration() }
     }),
-    TypeOrmModule.forFeature([User])
+    TypeOrmModule.forFeature([User]),
+    ClientsModule.register([
+      {
+        name: "NOTIFICATION_SERVICE",
+        transport: Transport.RMQ,
+        options: {
+          urls: ["amqp://localhost:5672"],
+          queue: "notification_queue",
+          queueOptions: {
+            durable: false
+          }
+        }
+      }
+    ])
   ],
   controllers: [AuthController],
   providers: [

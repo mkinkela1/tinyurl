@@ -1,4 +1,8 @@
-import { Injectable, InternalServerErrorException } from "@nestjs/common";
+import {
+  Inject,
+  Injectable,
+  InternalServerErrorException
+} from "@nestjs/common";
 import { User } from "src/user/entities/user.entity";
 import { SignUpDtoRequest } from "src/auth/dto/request/sign-up.dto-request";
 import * as bcrypt from "bcrypt";
@@ -21,12 +25,14 @@ import jwtDecode from "jwt-decode";
 import { UserRepository } from "src/user/user.repository";
 import { VerifyEmailDtoRequest } from "src/auth/dto/request/verify-email.dto-request";
 import { ResendVerificationEmailDtoRequest } from "src/auth/dto/request/resend-verification-email.dto-request";
+import { ClientProxy } from "@nestjs/microservices";
 
 @Injectable()
 export class AuthService {
   constructor(
     private jwtService: JwtService,
-    private userRepository: UserRepository
+    private userRepository: UserRepository,
+    @Inject("NOTIFICATION_SERVICE") private client: ClientProxy
   ) {}
 
   async signUp(dto: SignUpDtoRequest): Promise<void> {
@@ -52,7 +58,10 @@ export class AuthService {
 
     try {
       await this.userRepository.save(user);
-      // TODO: send email confirmation
+      this.client.emit("email_notification", {
+        email,
+        emailConfirmationToken: hashedEmailConfirmationToken
+      });
     } catch (e) {
       if (e.code === "23505") throw new EmailAlreadyExistsException();
       else new InternalServerErrorException(e);
@@ -137,8 +146,7 @@ export class AuthService {
       ...user,
       emailConfirmationToken: hashedEmailConfirmationToken
     });
-    //await this.mailService.sendConfirmationEmail(email, emailConfirmationToken);
-    // TODO: send email
+    this.client.emit("email_notification", { email, emailConfirmationToken });
   }
 
   private getAccessToken(payload: JwtPayload): string {

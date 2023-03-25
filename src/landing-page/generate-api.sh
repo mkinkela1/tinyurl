@@ -1,2 +1,1 @@
-npx swagger-typescript-api -p http://0.0.0.0:8080/api-json -o ./api-calls -n UrlServiceApi.ts --axios --default-as-success
-npx swagger-typescript-api -p http://0.0.0.0:8081/api-json -o ./api-calls -n UserServiceApi.ts --axios --default-as-success
+npx swagger-typescript-api -p http://0.0.0.0:8000/api-json -o ./api-calls -n GenerateApi.ts --axios --default-as-success

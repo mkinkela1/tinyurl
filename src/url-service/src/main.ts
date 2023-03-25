@@ -13,6 +13,9 @@ async function bootstrap() {
     AppModule,
     new FastifyAdapter({ logger: true })
   );
+
+  // app.connectMicroservice();
+
   app.enableCors({
     origin: "*",
     methods: "GET, PUT, POST, DELETE",
