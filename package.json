@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@nestjs/mapped-types": "*",
     "husky": "^8.0.2"
   },
   "devDependencies": {

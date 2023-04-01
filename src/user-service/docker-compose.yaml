@@ -26,6 +26,7 @@ services:
       - "8081:8081"
     networks:
       - user-network
+      - default
     volumes:
       - .:/src/app
       - /src/app/node_modules
@@ -47,11 +48,15 @@ services:
       retries: 3
     networks:
       - user-network
+      - default
     volumes:
       - ./pgdata:/var/lib/postgresql/data
     command: -p 5433
 
 networks:
+  default:
+    external:
+      name: rabbitmq_network
   user-network:
 volumes:
   pgdata:

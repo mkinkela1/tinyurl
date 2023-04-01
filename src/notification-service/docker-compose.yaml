@@ -1,0 +1,19 @@
+version: "3.8"
+services:
+  api:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    restart: always
+    command: [ "./scripts/docker-entrypoint.sh" ]
+    networks:
+      - default
+    volumes:
+      - .:/src/app
+      - /src/app/node_modules
+volumes:
+  rabbit_data:
+networks:
+  default:
+    external:
+      name: rabbitmq_network

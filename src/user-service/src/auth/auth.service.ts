@@ -26,14 +26,17 @@ import { UserRepository } from "src/user/user.repository";
 import { VerifyEmailDtoRequest } from "src/auth/dto/request/verify-email.dto-request";
 import { ResendVerificationEmailDtoRequest } from "src/auth/dto/request/resend-verification-email.dto-request";
 import { ClientProxy } from "@nestjs/microservices";
+import { InjectRepository } from "@nestjs/typeorm";
 
 @Injectable()
 export class AuthService {
   constructor(
     private jwtService: JwtService,
-    private userRepository: UserRepository,
+    @InjectRepository(User) private userRepository: UserRepository,
     @Inject("NOTIFICATION_SERVICE") private client: ClientProxy
-  ) {}
+  ) {
+    this.client.connect().catch((e) => console.log(e));
+  }
 
   async signUp(dto: SignUpDtoRequest): Promise<void> {
     const { email, password, firstName, lastName } = dto;
@@ -58,10 +61,17 @@ export class AuthService {
 
     try {
       await this.userRepository.save(user);
-      this.client.emit("email_notification", {
-        email,
-        emailConfirmationToken: hashedEmailConfirmationToken
-      });
+      await this.client
+        .emit(
+          "email_notification",
+          JSON.stringify({
+            data: {
+              email,
+              emailConfirmationToken: hashedEmailConfirmationToken
+            }
+          })
+        )
+        .subscribe();
     } catch (e) {
       if (e.code === "23505") throw new EmailAlreadyExistsException();
       else new InternalServerErrorException(e);
