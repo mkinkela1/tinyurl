@@ -9,7 +9,7 @@ import { configService } from "src/config/config.service";
 import { JwtTokenStrategy } from "src/auth/jwt-token.strategy";
 import { JwtRefreshTokenStrategy } from "src/auth/jwt-refresh-token.strategy";
 import { UserRepository } from "src/user/user.repository";
-import { ClientsModule, Transport } from "@nestjs/microservices";
+import { RMQModule } from "nestjs-rmq";
 
 @Module({
   imports: [
@@ -19,19 +19,18 @@ import { ClientsModule, Transport } from "@nestjs/microservices";
       signOptions: { expiresIn: configService.getJwtTokenDuration() }
     }),
     TypeOrmModule.forFeature([User]),
-    ClientsModule.register([
-      {
-        name: "NOTIFICATION_SERVICE",
-        transport: Transport.RMQ,
-        options: {
-          urls: ["amqp://rabbitmq:5672"],
-          queue: "notification_queue",
-          queueOptions: {
-            durable: true
-          }
+    RMQModule.forRoot({
+      exchangeName: "NOTIFICATION_SERVICE",
+      connections: [
+        {
+          login: "guest",
+          password: "guest",
+          host: "rabbitmq:5672"
         }
-      }
-    ])
+      ],
+      queueOptions: { durable: false },
+      queueName: "notification_queue"
+    })
   ],
   controllers: [AuthController],
   providers: [

@@ -59,7 +59,7 @@ async function bootstrap() {
   };
   SwaggerModule.setup("api", app, document);
 
-  await app.listen(port);
+  await app.listen(port, "0.0.0.0");
   Logger.log(
     `🚀 Application is running on: http://localhost:${port}/${globalPrefix}`
   );

@@ -7,7 +7,6 @@ import {
 } from "@nestjs/platform-fastify";
 import { ValidationPipe } from "@nestjs/common";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
-import { MicroserviceOptions, Transport } from "@nestjs/microservices";
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -43,18 +42,17 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup("api", app, document);
 
-  app.connectMicroservice<MicroserviceOptions>({
-    transport: Transport.RMQ,
-    options: {
-      urls: ["amqp://rabbitmq:5672"],
-      queue: "notification_queue",
-      queueOptions: {
-        durable: true
-      }
-    }
-  });
-
-  await app.startAllMicroservices();
+  // app.connectMicroservice<MicroserviceOptions>({
+  //   transport: Transport.RMQ,
+  //   options: {
+  //     urls: ["amqp://rabbitmq:5672"],
+  //     queue: "notification_queue",
+  //     queueOptions: { durable: false },
+  //     prefetchCount: 1
+  //   }
+  // });
+  //
+  // await app.startAllMicroservices();
   await app.listen(configService.getPort(), "0.0.0.0");
 }
 

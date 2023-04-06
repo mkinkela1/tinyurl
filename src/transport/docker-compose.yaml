@@ -4,8 +4,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    volumes:
-      - rabbit_data:/var/lib/rabbitmq
     ports:
       - "5672:5672"
       - "15672:15672"

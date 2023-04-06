@@ -1,8 +1,4 @@
-import {
-  Inject,
-  Injectable,
-  InternalServerErrorException
-} from "@nestjs/common";
+import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { User } from "src/user/entities/user.entity";
 import { SignUpDtoRequest } from "src/auth/dto/request/sign-up.dto-request";
 import * as bcrypt from "bcrypt";
@@ -25,18 +21,16 @@ import jwtDecode from "jwt-decode";
 import { UserRepository } from "src/user/user.repository";
 import { VerifyEmailDtoRequest } from "src/auth/dto/request/verify-email.dto-request";
 import { ResendVerificationEmailDtoRequest } from "src/auth/dto/request/resend-verification-email.dto-request";
-import { ClientProxy } from "@nestjs/microservices";
 import { InjectRepository } from "@nestjs/typeorm";
+import { RMQService } from "nestjs-rmq";
 
 @Injectable()
 export class AuthService {
   constructor(
     private jwtService: JwtService,
     @InjectRepository(User) private userRepository: UserRepository,
-    @Inject("NOTIFICATION_SERVICE") private client: ClientProxy
-  ) {
-    this.client.connect().catch((e) => console.log(e));
-  }
+    private readonly rmqService: RMQService
+  ) {}
 
   async signUp(dto: SignUpDtoRequest): Promise<void> {
     const { email, password, firstName, lastName } = dto;
@@ -46,7 +40,7 @@ export class AuthService {
       email
     });
     const hashedPassword = await bcrypt.hash(password, salt);
-    const hashedEmailConfirmationToken: string = bcrypt.hash(
+    const hashedEmailConfirmationToken: string = await bcrypt.hash(
       emailConfirmationToken,
       salt
     );
@@ -61,17 +55,17 @@ export class AuthService {
 
     try {
       await this.userRepository.save(user);
-      await this.client
-        .emit(
-          "email_notification",
-          JSON.stringify({
-            data: {
-              email,
-              emailConfirmationToken: hashedEmailConfirmationToken
-            }
-          })
-        )
-        .subscribe();
+
+      const payload = {
+        template: "email_confirmation",
+        payload: {
+          ...user,
+          subject: "Please confirm your email"
+        }
+      };
+
+      // await this.client.emit("email_sign_up", payload);
+      await this.rmqService.send("email.sign_up", payload);
     } catch (e) {
       if (e.code === "23505") throw new EmailAlreadyExistsException();
       else new InternalServerErrorException(e);
@@ -156,7 +150,7 @@ export class AuthService {
       ...user,
       emailConfirmationToken: hashedEmailConfirmationToken
     });
-    this.client.emit("email_notification", { email, emailConfirmationToken });
+    // this.client.emit("email_notification", { email, emailConfirmationToken });
   }
 
   private getAccessToken(payload: JwtPayload): string {

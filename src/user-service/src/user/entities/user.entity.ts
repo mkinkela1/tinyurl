@@ -15,7 +15,7 @@ export class User extends BaseGlobalEntity {
   @Column({ type: "varchar", length: 300 })
   lastName: string;
 
-  @Column({ type: "uuid", nullable: true })
+  @Column({ type: "varchar", nullable: true })
   emailConfirmationToken: string;
 
   @Column({ type: "varchar", nullable: true })

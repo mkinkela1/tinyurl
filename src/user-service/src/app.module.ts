@@ -4,7 +4,7 @@ import { ConfigModule } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { configService } from "src/config/config.service";
 import { AuthModule } from "src/auth/auth.module";
-import { ClientsModule, Transport } from "@nestjs/microservices";
+import { RMQModule } from "nestjs-rmq";
 
 @Module({
   imports: [
@@ -12,19 +12,31 @@ import { ClientsModule, Transport } from "@nestjs/microservices";
     TypeOrmModule.forRoot(configService.getTypeOrmConfig()),
     UserModule,
     AuthModule,
-    ClientsModule.register([
-      {
-        name: "NOTIFICATION_SERVICE",
-        transport: Transport.RMQ,
-        options: {
-          urls: ["amqp://rabbitmq:5672"],
-          queue: "notification_queue",
-          queueOptions: {
-            durable: true
-          }
+    // ClientsModule.register([
+    //   {
+    //     name: "NOTIFICATION_SERVICE",
+    //     transport: Transport.RMQ,
+    //     options: {
+    //       urls: ["amqp://rabbitmq:5672"],
+    //       queue: "notification_queue",
+    //       queueOptions: {
+    //         durable: true
+    //       }
+    //     }
+    //   }
+    // ])
+    RMQModule.forRoot({
+      exchangeName: "NOTIFICATION_SERVICE",
+      connections: [
+        {
+          login: "guest",
+          password: "guest",
+          host: "rabbitmq:5672"
         }
-      }
-    ])
+      ],
+      queueOptions: { durable: false },
+      queueName: "notification_queue"
+    })
   ]
 })
 export class AppModule {}

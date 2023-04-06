@@ -11,6 +11,12 @@ services:
     volumes:
       - .:/src/app
       - /src/app/node_modules
+  maildev:
+    image: maildev/maildev
+    container_name: maildev
+    ports:
+      - "1080:1080"
+      - "1025:1025"
 volumes:
   rabbit_data:
 networks:
