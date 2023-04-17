@@ -12,19 +12,6 @@ import { RMQModule } from "nestjs-rmq";
     TypeOrmModule.forRoot(configService.getTypeOrmConfig()),
     UserModule,
     AuthModule,
-    // ClientsModule.register([
-    //   {
-    //     name: "NOTIFICATION_SERVICE",
-    //     transport: Transport.RMQ,
-    //     options: {
-    //       urls: ["amqp://rabbitmq:5672"],
-    //       queue: "notification_queue",
-    //       queueOptions: {
-    //         durable: true
-    //       }
-    //     }
-    //   }
-    // ])
     RMQModule.forRoot({
       exchangeName: "NOTIFICATION_SERVICE",
       connections: [

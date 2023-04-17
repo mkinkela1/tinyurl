@@ -1,6 +1,6 @@
 import { Column, Entity, OneToMany } from "typeorm";
-import { BaseGlobalEntity } from "src/base.global-entity";
 import { UrlHit } from "src/url-hit/entities/url-hit.entity";
+import { BaseGlobalEntity } from "src/shared/base.global-entity";
 
 @Entity({ name: "url" })
 export class Url extends BaseGlobalEntity {

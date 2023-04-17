@@ -17,8 +17,24 @@ export interface CreateUrlDtoResponse {
   createDateTime: string;
 }
 
-export interface CreatetUrlDtoRequest {
+export interface CreateUrlDtoRequest {
   longUrl: string;
+}
+
+export interface DtoPaginationResult {
+  data: string[];
+  beforeCursor: string;
+  afterCursor: string;
+  pageSize: number;
+  totalCount: number;
+}
+
+export interface GetAllUrlsPaginatedDtoResponse {
+  id: string;
+  longUrl: string;
+  shortUrl: string;
+  /** @format date-time */
+  createdAt: string;
 }
 
 export interface GetUrlByShortUrlDtoResponse {
@@ -219,7 +235,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name UrlControllerCreate
      * @request POST:/api/url
      */
-    urlControllerCreate: (data: CreatetUrlDtoRequest, params: RequestParams = {}) =>
+    urlControllerCreate: (data: CreateUrlDtoRequest, params: RequestParams = {}) =>
       this.request<CreateUrlDtoResponse, void>({
         path: `/api/url`,
         method: "POST",
@@ -233,13 +249,28 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags URL
-     * @name UrlControllerFindAll
+     * @name UrlControllerGetAllUrlsPaginated
      * @request GET:/api/url
      */
-    urlControllerFindAll: (params: RequestParams = {}) =>
-      this.request<void, any>({
+    urlControllerGetAllUrlsPaginated: (
+      query?: {
+        beforeCursor?: string;
+        afterCursor?: string;
+        pageSize?: number;
+        orderBy?: "ASC" | "DESC";
+      },
+      params: RequestParams = {}
+    ) =>
+      this.request<
+        DtoPaginationResult & {
+          data?: GetAllUrlsPaginatedDtoResponse[];
+        },
+        any
+      >({
         path: `/api/url`,
         method: "GET",
+        query: query,
+        format: "json",
         ...params
       }),
 

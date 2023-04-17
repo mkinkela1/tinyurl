@@ -1,4 +1,4 @@
 import { PartialType } from "@nestjs/swagger";
-import { CreatetUrlDtoRequest } from "src/url/dto/request/createt-url.dto-request";
+import { CreateUrlDtoRequest } from "src/url/dto/request/create-url.dto-request";
 
-export class UpdateUrlDto extends PartialType(CreatetUrlDtoRequest) {}
+export class UpdateUrlDto extends PartialType(CreateUrlDtoRequest) {}

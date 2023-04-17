@@ -1,7 +1,7 @@
 import { IsUrl } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 
-export class CreatetUrlDtoRequest {
+export class CreateUrlDtoRequest {
   @ApiProperty()
   @IsUrl()
   longUrl: string;

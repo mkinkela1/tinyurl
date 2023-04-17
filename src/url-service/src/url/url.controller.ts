@@ -1,6 +1,13 @@
-import { Body, Controller, Delete, Get, Param, Post } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Query
+} from "@nestjs/common";
 import { UrlService } from "./url.service";
-import { CreatetUrlDtoRequest } from "src/url/dto/request/createt-url.dto-request";
 import { CreateUrlDtoResponse } from "src/url/dto/response/create-url.dto-response";
 import {
   ApiExtraModels,
@@ -11,6 +18,10 @@ import {
   getSchemaPath
 } from "@nestjs/swagger";
 import { GetUrlByShortUrlDtoResponse } from "src/url/dto/response/get-url-by-short-url.dto-response";
+import { CreateUrlDtoRequest } from "src/url/dto/request/create-url.dto-request";
+import { GetAllUrlsPaginatedDtoRequest } from "src/url/dto/request/get-all-urls-paginated.dto-request";
+import { GetAllUrlsPaginatedDtoResponse } from "src/url/dto/response/get-all-urls-paginated.dto-response";
+import { DtoPaginationResult } from "src/shared/dto/response/DtoPaginationResponse";
 
 @ApiTags("URL")
 @Controller("url")
@@ -26,14 +37,32 @@ export class UrlController {
   })
   @ApiInternalServerErrorResponse()
   create(
-    @Body() createUrlDto: CreatetUrlDtoRequest
+    @Body() createUrlDto: CreateUrlDtoRequest
   ): Promise<CreateUrlDtoResponse> {
     return this.urlService.create(createUrlDto);
   }
 
   @Get()
-  findAll() {
-    return this.urlService.findAll();
+  @ApiExtraModels(DtoPaginationResult, GetAllUrlsPaginatedDtoResponse)
+  @ApiResponse({
+    schema: {
+      allOf: [
+        { $ref: getSchemaPath(DtoPaginationResult) },
+        {
+          properties: {
+            data: {
+              type: "array",
+              items: { $ref: getSchemaPath(GetAllUrlsPaginatedDtoResponse) }
+            }
+          }
+        }
+      ]
+    }
+  })
+  getAllUrlsPaginated(
+    @Query() request: GetAllUrlsPaginatedDtoRequest
+  ): Promise<DtoPaginationResult<GetAllUrlsPaginatedDtoResponse>> {
+    return this.urlService.getAllUrlsPaginated(request);
   }
 
   @Get(":shortUrl")

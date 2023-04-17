@@ -10,6 +10,7 @@ import {
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { ComponentProps, ComponentType } from "react";
+import { useRouter } from "next/router";
 
 interface INav {
   id: string;
@@ -45,6 +46,10 @@ const navigation: INav[] = [
 ];
 
 export default function () {
+  const { pathname } = useRouter();
+
+  const location = pathname.slice("/dashboard".length);
+
   return (
     <menu className="h-screen w-64">
       <div className="bg-tertiary h-full overflow-y-auto py-5 px-3 pt-16">
@@ -52,7 +57,12 @@ export default function () {
           {navigation.map(({ id, label, href, Icon }) => (
             <li
               key={id}
-              className="text-quaternary hover:text-primary-500 group flex items-center rounded-lg p-2 text-base font-normal"
+              className={`${
+                (href == "" && location == "") ||
+                (href != "" && location.includes(href))
+                  ? "text-primary-500"
+                  : "text-quaternary"
+              } hover:text-primary-500 group flex items-center rounded-lg p-2 text-base font-normal`}
             >
               <Icon className="h-6 w-6" />
               <Link href={`/dashboard/${href}`} className="ml-3">

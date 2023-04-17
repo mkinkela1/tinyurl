@@ -1,4 +1,5 @@
 import {
+  Inject,
   Injectable,
   InternalServerErrorException,
   NotFoundException
@@ -8,25 +9,27 @@ import {
   SHORT_URL_ALPHABET,
   SHORT_URL_LENGTH
 } from "src/constants/ShortUrlConstants";
-import { CreatetUrlDtoRequest } from "src/url/dto/request/createt-url.dto-request";
 import { CreateUrlDtoResponse } from "src/url/dto/response/create-url.dto-response";
 import { UrlMapper } from "src/url/url.mapper";
-import { Repository } from "typeorm";
 import { Url } from "src/url/entities/url.entity";
-import { InjectRepository } from "@nestjs/typeorm";
 import { GetUrlByShortUrlDtoResponse } from "src/url/dto/response/get-url-by-short-url.dto-response";
+import { DtoPaginationResult } from "src/shared/dto/response/DtoPaginationResponse";
+import { UrlRepository } from "src/url/url.repository";
+import { GetAllUrlsPaginatedDtoRequest } from "src/url/dto/request/get-all-urls-paginated.dto-request";
+import { GetAllUrlsPaginatedDtoResponse } from "src/url/dto/response/get-all-urls-paginated.dto-response";
+import { CreateUrlDtoRequest } from "src/url/dto/request/create-url.dto-request";
 
 @Injectable()
 export class UrlService {
   constructor(
-    @InjectRepository(Url)
-    private urlRepository: Repository<Url>,
+    @Inject(UrlRepository)
+    private urlRepository: UrlRepository,
     private mapper: UrlMapper
   ) {}
 
   async create({
     longUrl
-  }: CreatetUrlDtoRequest): Promise<CreateUrlDtoResponse> {
+  }: CreateUrlDtoRequest): Promise<CreateUrlDtoResponse> {
     const nanoid = customAlphabet(SHORT_URL_ALPHABET, SHORT_URL_LENGTH);
     const shortUrl = await nanoid();
 
@@ -44,8 +47,22 @@ export class UrlService {
     return this.mapper.mapToCreateUrlDtoResponse(url);
   }
 
-  findAll() {
-    return this.urlRepository.findAndCount();
+  async getAllUrlsPaginated(
+    request: GetAllUrlsPaginatedDtoRequest
+  ): Promise<DtoPaginationResult<GetAllUrlsPaginatedDtoResponse>> {
+    const { ...meta } = request;
+
+    const {
+      data,
+      cursor: { beforeCursor, afterCursor }
+    } = await this.urlRepository.getAll(meta);
+
+    return new DtoPaginationResult({
+      beforeCursor,
+      afterCursor,
+      pageSize: meta.pageSize,
+      data: data.map((url: Url) => new GetAllUrlsPaginatedDtoResponse(url))
+    });
   }
 
   async findOne(shortUrl: string): Promise<GetUrlByShortUrlDtoResponse> {

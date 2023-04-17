@@ -7,7 +7,7 @@ interface IProps {
 
 export default function ({ generateButtonLabel, onClick }: IProps) {
   return (
-    <header className="bg-secondary drop-shadow-1 sticky top-0 flex w-full shadow-sm drop-shadow-sm">
+    <header className="bg-secondary drop-shadow-1 top-0 flex w-full shadow-sm drop-shadow-sm">
       <div className="flex w-full justify-between sm:block">
         <div className="relative px-6 py-4">
           <button className="absolute top-1/2 left-6 -translate-y-1/2">

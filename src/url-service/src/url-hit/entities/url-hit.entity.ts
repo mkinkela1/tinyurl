@@ -1,6 +1,6 @@
 import { Entity, ManyToOne } from "typeorm";
-import { BaseGlobalEntity } from "src/base.global-entity";
 import { Url } from "src/url/entities/url.entity";
+import { BaseGlobalEntity } from "src/shared/base.global-entity";
 
 @Entity({ name: "url_hit" })
 export class UrlHit extends BaseGlobalEntity {
