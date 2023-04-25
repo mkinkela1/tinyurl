@@ -27,7 +27,6 @@ export default function Home() {
 
       onSuccess("Short url successfully created");
     } catch (e) {
-      console.log(e);
       onError("Error creating short url");
     }
   };

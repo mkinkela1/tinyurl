@@ -8,7 +8,7 @@ export default function Document() {
         <Head>
           <link rel="shortcut icon" href="/assets/favicon.ico" />
         </Head>
-        <body>
+        <body className="overflow-hidden">
           <Main />
           <NextScript />
         </body>

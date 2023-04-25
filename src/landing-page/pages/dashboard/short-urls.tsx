@@ -3,27 +3,51 @@ import useColumns from "hooks/useColumns";
 import { GetAllUrlsPaginatedDtoResponse } from "api-calls/GenerateApi";
 import Table from "components/Table";
 import Api from "api-calls/Api";
-import { useState } from "react";
+import { GetServerSideProps } from "next";
+import DateTimeCell from "components/table-cells/DateTimeCell";
+import UrlCell from "components/table-cells/UrlCell";
 
-export default function ShortUrls() {
-  const [data, setData] = useState<GetAllUrlsPaginatedDtoResponse[]>([]);
+export default function ShortUrls({ data, meta }) {
   const columns = useColumns<GetAllUrlsPaginatedDtoResponse>([
-    { Header: "id", accessor: "id" },
     {
       Header: "Long url",
       accessor: "longUrl"
     },
-    { Header: "Short url", accessor: "shortUrl" },
-    { Header: "Created at", accessor: "createdAt" }
+    {
+      Header: "Short url",
+      accessor: "shortUrl",
+      Cell: ({
+        row: {
+          original: { shortUrl }
+        }
+      }: any) => <UrlCell value={shortUrl} />
+    },
+    {
+      Header: "Created at",
+      accessor: "createdAt",
+      Cell: ({
+        row: {
+          original: { createdAt }
+        }
+      }: any) => <DateTimeCell value={createdAt} />
+    }
   ]);
 
-  Api.urlControllerGetAllUrlsPaginated().then(({ data: { data } }) =>
-    setData(data)
-  );
-
-  return <Table columns={columns} data={data} />;
+  return <Table columns={columns} data={data} meta={meta} />;
 }
 
 ShortUrls.getLayout = function getLayout(page) {
   return <DashboardLayout>{page}</DashboardLayout>;
+};
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const {
+    data: { data, ...meta }
+  } = await Api.urlControllerGetAllUrlsPaginated({
+    ...context.query,
+    pageSize: 20
+  });
+  return {
+    props: { data, meta }
+  };
 };

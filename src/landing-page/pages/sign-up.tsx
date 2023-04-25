@@ -59,7 +59,6 @@ export default function () {
 
         Router.replace("/");
       } catch (e) {
-        console.log(e);
         onError(e.toString());
       }
     })();

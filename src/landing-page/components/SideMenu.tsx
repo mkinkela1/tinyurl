@@ -11,38 +11,62 @@ import {
 import Link from "next/link";
 import { ComponentProps, ComponentType } from "react";
 import { useRouter } from "next/router";
+import { Badge } from "components/Badge";
+import { OVERVIEW, SHORT_URLS } from "constants/Routes";
 
 interface INav {
   id: string;
   label: string;
   href: string;
   Icon: ComponentType<ComponentProps<"svg">>;
+  comingSoon?: boolean;
 }
 
 const navigation: INav[] = [
-  { id: "overview", label: "Overview", href: "", Icon: ChartPieIcon },
-  { id: "short-urls", label: "Short URLs", href: "short-urls", Icon: LinkIcon },
+  { id: "overview", label: "Overview", href: OVERVIEW, Icon: ChartPieIcon },
+  { id: "short-urls", label: "Short URLs", href: SHORT_URLS, Icon: LinkIcon },
   {
     id: "analytics",
     label: "Analytics",
     href: "analytics",
-    Icon: ChartBarIcon
+    Icon: ChartBarIcon,
+    comingSoon: true
   },
   {
     id: "integration",
     label: "Integration",
     href: "integration",
-    Icon: PuzzlePieceIcon
+    Icon: PuzzlePieceIcon,
+    comingSoon: true
   },
-  { id: "billing", label: "Billing", href: "billing", Icon: CreditCardIcon },
-  { id: "users", label: "Users", href: "users", Icon: UsersIcon },
   {
-    id: "account-settings",
-    label: "Account settings",
-    href: "account-settings",
-    Icon: CogIcon
+    id: "billing",
+    label: "Billing",
+    href: "billing",
+    Icon: CreditCardIcon,
+    comingSoon: true
   },
-  { id: "help", label: "Help", href: "help", Icon: QuestionMarkCircleIcon }
+  {
+    id: "users",
+    label: "Users",
+    href: "users",
+    Icon: UsersIcon,
+    comingSoon: true
+  },
+  {
+    id: "settings",
+    label: "Settings",
+    href: "settings",
+    Icon: CogIcon,
+    comingSoon: true
+  },
+  {
+    id: "help",
+    label: "Help",
+    href: "help",
+    Icon: QuestionMarkCircleIcon,
+    comingSoon: true
+  }
 ];
 
 export default function () {
@@ -51,10 +75,10 @@ export default function () {
   const location = pathname.slice("/dashboard".length);
 
   return (
-    <menu className="h-screen w-64">
+    <menu className="top-0 h-screen w-64">
       <div className="bg-tertiary h-full overflow-y-auto py-5 px-3 pt-16">
         <ul className="space-y-2">
-          {navigation.map(({ id, label, href, Icon }) => (
+          {navigation.map(({ id, label, href, Icon, comingSoon }) => (
             <li
               key={id}
               className={`${
@@ -65,9 +89,13 @@ export default function () {
               } hover:text-primary-500 group flex items-center rounded-lg p-2 text-base font-normal`}
             >
               <Icon className="h-6 w-6" />
-              <Link href={`/dashboard/${href}`} className="ml-3">
+              <Link
+                href={comingSoon ? "" : `/dashboard/${href}`}
+                className="ml-3"
+              >
                 {label}
               </Link>
+              {comingSoon && <Badge label="Coming soon!" />}
             </li>
           ))}
         </ul>

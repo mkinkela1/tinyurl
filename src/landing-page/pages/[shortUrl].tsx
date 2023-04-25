@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import Api from "api-calls/Api";
+import geoip from "geoip-lite";
 
 export default function ({ data: { longUrl } }) {
   useEffect(() => {
@@ -12,7 +13,7 @@ export default function ({ data: { longUrl } }) {
   return longUrl ? <></> : <h1>Requested link not found</h1>;
 }
 
-export async function getServerSideProps({ query }) {
+export async function getServerSideProps({ query, req }) {
   const shortUrl: string = query.shortUrl as string;
 
   const {
@@ -26,7 +27,14 @@ export async function getServerSideProps({ query }) {
       }
     };
 
-  await Api.urlHitControllerCreate({ urlId: id });
+  const ip = req.headers["x-real-ip"] || req.connection.remoteAddress;
+
+  const geo = geoip.lookup(ip);
+  const country: string = geo?.country || "Unknown";
+
+  console.log(geo);
+
+  await Api.urlHitControllerCreate({ urlId: id, country });
 
   return {
     props: {

@@ -50,10 +50,12 @@ export interface CreateUrlHitDtoResponse {
   urlId: string;
   /** @format date-time */
   createDateTime: string;
+  country: string;
 }
 
 export interface CreateUrlHitDtoRequest {
   urlId: string;
+  country: string;
 }
 
 export interface UpdateUrlHitDto {
@@ -61,6 +63,7 @@ export interface UpdateUrlHitDto {
   urlId?: string;
   /** @format date-time */
   createDateTime?: string;
+  country?: string;
 }
 
 export interface SignUpDtoRequest {
@@ -258,6 +261,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         afterCursor?: string;
         pageSize?: number;
         orderBy?: "ASC" | "DESC";
+        search?: string;
       },
       params: RequestParams = {}
     ) =>

@@ -1,13 +1,30 @@
 import React, { useState } from "react";
 import { Column, useTable } from "react-table";
 import { IRow } from "hooks/useColumns";
+import { useRouter } from "next/router";
+import { isNullOrUndefined } from "utils/helpers";
+import Button from "components/Button";
+
+interface IMeta {
+  beforeCursor?: string;
+  afterCursor?: string;
+  pageSize?: number;
+  orderBy?: "ASC" | "DESC";
+  totalCount?: number;
+}
 
 interface IProps<T extends IRow> {
   columns: Column<T>[];
   data: T[];
+  meta: IMeta;
 }
 
-const Table = <T extends IRow>({ columns = [], data = [] }: IProps<T>) => {
+const Table = <T extends IRow>({
+  columns = [],
+  data = [],
+  meta: { beforeCursor, afterCursor, totalCount, orderBy, pageSize }
+}: IProps<T>) => {
+  const router = useRouter();
   const [selectedRowId, setSelectedRowId] = useState<string>(null);
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     useTable({ columns, data });
@@ -21,11 +38,29 @@ const Table = <T extends IRow>({ columns = [], data = [] }: IProps<T>) => {
     setSelectedRowId(id);
   };
 
+  const goToPrev = () => {
+    const { query, pathname } = router;
+
+    router.push({
+      pathname,
+      query: { ...query, beforeCursor, afterCursor: null }
+    });
+  };
+
+  const goToNext = () => {
+    const { query, pathname } = router;
+
+    router.push({
+      pathname,
+      query: { ...query, afterCursor, beforeCursor: null }
+    });
+  };
+
   return (
-    <section className="relative w-full overflow-x-hidden bg-white">
+    <section className="relative w-full overflow-x-hidden">
       <div className="mx-auto px-4">
         <div
-          className="overflow-x-scroll rounded-md border  border-gray-200 p-5 shadow-sm md:w-full"
+          className="bg-secondary overflow-x-scroll rounded-md border border-gray-200 p-5 shadow-sm md:w-full"
           data-aos="fade-up"
         >
           <table
@@ -35,7 +70,6 @@ const Table = <T extends IRow>({ columns = [], data = [] }: IProps<T>) => {
             <thead>
               {headerGroups.map((headerGroup) => (
                 <tr className="border-b" {...headerGroup.getHeaderGroupProps()}>
-                  <th className="w-6 border-b px-2 pl-3 font-bold text-gray-700"></th>
                   {headerGroup.headers.map((column) => (
                     <th
                       {...column.getHeaderProps()}
@@ -59,25 +93,6 @@ const Table = <T extends IRow>({ columns = [], data = [] }: IProps<T>) => {
                     ) => selectRow(e, row.id)}
                     key={row.id}
                   >
-                    <td
-                      className="flex items-center py-3 pl-3 align-middle font-normal text-gray-500"
-                      key={row.id}
-                    >
-                      <input
-                        type="radio"
-                        id="themeToggler"
-                        checked={row.id === selectedRowId}
-                        className="peer hidden"
-                      />
-                      <label
-                        htmlFor="themeToggler"
-                        className={`${
-                          row.id === selectedRowId
-                            ? "bg-primary"
-                            : "bg-gray-400"
-                        } h-5 w-5 rounded-3xl`}
-                      ></label>
-                    </td>
                     {row.cells.map((cell) => {
                       return (
                         <td
@@ -93,6 +108,27 @@ const Table = <T extends IRow>({ columns = [], data = [] }: IProps<T>) => {
               })}
             </tbody>
           </table>
+          <nav className="flex w-full items-center justify-between">
+            <p className="mt-1 text-base text-gray-600">
+              <strong>Total: </strong> {totalCount} results
+            </p>
+            <ul className="list-style-none mt-2.5 flex">
+              <li>
+                <Button
+                  onClick={goToPrev}
+                  disabled={isNullOrUndefined(beforeCursor)}
+                  label="Previous"
+                />
+              </li>
+              <li>
+                <Button
+                  onClick={goToNext}
+                  disabled={isNullOrUndefined(afterCursor)}
+                  label="Next"
+                />
+              </li>
+            </ul>
+          </nav>
         </div>
       </div>
     </section>

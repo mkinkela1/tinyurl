@@ -23,14 +23,16 @@ export class UrlHitService {
   ) {}
 
   async create({
-    urlId
+    urlId,
+    country
   }: CreateUrlHitDtoRequest): Promise<CreateUrlHitDtoResponse> {
     const url: Url = await this.urlRepository.findOne(urlId);
 
     if (!url) throw new NotFoundException();
 
     const urlHit = this.urlHitRepository.create({
-      url
+      url,
+      country
     });
 
     try {

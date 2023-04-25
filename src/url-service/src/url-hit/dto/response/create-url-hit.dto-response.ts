@@ -1,5 +1,5 @@
 import { ApiResponseProperty } from "@nestjs/swagger";
-import { IsDate, IsUUID } from "class-validator";
+import { IsDate, IsString, IsUUID } from "class-validator";
 
 export class CreateUrlHitDtoResponse {
   @IsUUID()
@@ -13,6 +13,10 @@ export class CreateUrlHitDtoResponse {
   @IsDate()
   @ApiResponseProperty()
   createDateTime: Date;
+
+  @IsString()
+  @ApiResponseProperty()
+  country: string;
 
   constructor(obj: Partial<CreateUrlHitDtoResponse>) {
     Object.assign(this, obj);
